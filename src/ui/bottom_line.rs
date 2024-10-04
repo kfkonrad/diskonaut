@@ -59,20 +59,13 @@ fn render_last_read_path(buf: &mut Buffer, last_read_path: &PathBuf, max_len: u1
     }
 }
 
-fn render_controls_legend(buf: &mut Buffer, hide_delete: bool, max_len: u16, y: u16) {
-    let (long_controls_line, short_controls_line) = if hide_delete {
-        (
+fn render_controls_legend(buf: &mut Buffer, _hide_delete: bool, max_len: u16, y: u16) {
+    let (long_controls_line, short_controls_line) = (
             String::from(
-                "<arrows> - move around, <ENTER> - enter folder, <ESC> - parent folder, <+/-/0> - zoom in/out/reset, <q> - quit",
+                "<arrows> - move around, <ENTER> - enter folder, <ESC> - parent folder, <+/-/0> - zoom in/out/reset, <q> - quit, <Q> - quit immediately",
             ),
             String::from("←↓↑→/<ENTER>/<ESC>: navigate"),
-        )
-    } else {
-        (
-            String::from("<arrows> - move around, <ENTER> - enter folder, <ESC> - parent folder, <BACKSPACE> - delete, <+/-/0> - zoom in/out/reset, <q> - quit"),
-            String::from("←↓↑→/<ENTER>/<ESC>: navigate, <BACKSPACE>: del")
-        )
-    };
+        );
     let too_small_line = "(...)";
     if max_len >= long_controls_line.chars().count() as u16 {
         buf.set_string(

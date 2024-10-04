@@ -155,6 +155,10 @@ pub fn start<B>(
                             modifiers: KeyModifiers::NONE,
                         })
                         | BackEvent::Key(KeyEvent {
+                            code: KeyCode::Char('Q'),
+                            modifiers: KeyModifiers::SHIFT,
+                        })
+                        | BackEvent::Key(KeyEvent {
                             code: KeyCode::Char('c'),
                             modifiers: KeyModifiers::CONTROL,
                         }) = evt
