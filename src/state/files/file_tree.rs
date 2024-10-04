@@ -3,7 +3,6 @@ use ::std::fs::Metadata;
 use ::std::path::{Path, PathBuf};
 
 use crate::state::files::{FileOrFolder, Folder};
-use crate::state::FileToDelete;
 
 pub struct FileTree {
     pub current_folder_names: Vec<OsString>,
@@ -37,7 +36,7 @@ impl FileTree {
         } else if let Some(FileOrFolder::Folder(current_folder)) =
             self.base_folder.path(self.current_folder_names.clone())
         {
-            &current_folder
+            current_folder
         } else {
             // here we have something in current_folder_names but the last
             // one is somehow not a folder... this is a corrupted state
@@ -50,7 +49,7 @@ impl FileTree {
     pub fn get_current_path(&self) -> PathBuf {
         let mut full_path = PathBuf::from(&self.path_in_filesystem);
         for folder in &self.current_folder_names {
-            full_path.push(&folder)
+            full_path.push(folder)
         }
         full_path
     }
@@ -64,10 +63,6 @@ impl FileTree {
     pub fn leave_folder(&mut self) -> bool {
         // true => succeeded, false => at base folder
         self.current_folder_names.pop().is_some()
-    }
-    pub fn delete_file(&mut self, file_to_delete: &FileToDelete) {
-        let path_to_delete = &file_to_delete.path_to_file;
-        self.base_folder.delete_path(&path_to_delete);
     }
     pub fn add_entry(&mut self, entry_metadata: &Metadata, entry_full_path: &Path) {
         let base_path_length = self.path_in_filesystem.components().count();

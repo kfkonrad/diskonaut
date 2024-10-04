@@ -11,7 +11,7 @@ impl TermTooSmall {
     }
 }
 
-impl<'a> Widget for TermTooSmall {
+impl Widget for TermTooSmall {
     fn render(self, area: Rect, buf: &mut Buffer) {
         let text = [
             "Terminal window is too small ¯\\_(ツ)_/¯",
@@ -23,7 +23,7 @@ impl<'a> Widget for TermTooSmall {
         for line in text.iter() {
             if area.width >= line.chars().count() as u16 {
                 buf.set_string(
-                    ((area.x + area.width) / 2) as u16 - ((line.chars().count() / 2) as u16),
+                    ((area.x + area.width) / 2) - ((line.chars().count() / 2) as u16),
                     area.y + area.height / 2,
                     line,
                     Style::default().add_modifier(Modifier::BOLD),

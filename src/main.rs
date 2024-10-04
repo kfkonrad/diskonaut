@@ -55,9 +55,6 @@ pub struct Opt {
     #[structopt(short, long)]
     /// Show file sizes rather than their block usage on disk
     apparent_size: bool,
-    #[structopt(short, long)]
-    /// Don't ask for confirmation before deleting
-    disable_delete_confirmation: bool,
 }
 
 fn main() {
@@ -90,7 +87,6 @@ fn try_main() -> Result<(), failure::Error> {
                 Box::new(terminal_events),
                 folder,
                 opts.apparent_size,
-                opts.disable_delete_confirmation,
             );
         }
         Err(_) => failure::bail!("Failed to get stdout: are you trying to pipe 'diskonaut'?"),
@@ -104,7 +100,6 @@ pub fn start<B>(
     terminal_events: Box<dyn Iterator<Item = BackEvent> + Send>,
     path: PathBuf,
     show_apparent_size: bool,
-    disable_delete_confirmation: bool,
 ) where
     B: Backend + Send + 'static,
 {
@@ -249,13 +244,7 @@ pub fn start<B>(
         );
     }
 
-    let mut app = App::new(
-        terminal_backend,
-        path,
-        event_sender,
-        show_apparent_size,
-        disable_delete_confirmation,
-    );
+    let mut app = App::new(terminal_backend, path, event_sender, show_apparent_size);
     app.start(instruction_receiver);
     running.store(false, Ordering::Release);
 

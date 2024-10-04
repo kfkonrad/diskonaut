@@ -191,7 +191,7 @@ impl TitleTelescope {
         }
     }
     fn draw_loading_chars(&self, text_length: u16, rect: Rect, buf: &mut Buffer) {
-        let index_in_text = (self.loading_indicator as u16 % (text_length)) as u16;
+        let index_in_text = self.loading_indicator as u16 % (text_length);
         buf.get_mut(rect.x + 1 + index_in_text, rect.y)
             .set_style(Style::default().add_modifier(Modifier::BOLD));
         if index_in_text >= text_length - 2 {

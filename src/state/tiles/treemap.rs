@@ -18,7 +18,7 @@ impl TreeMap {
         TreeMap {
             tiles: vec![],
             unrenderable_tile_coordinates: None,
-            total_size: (empty_space.height * empty_space.width) as f64,
+            total_size: (empty_space.height * empty_space.width),
             empty_space,
         }
     }
@@ -47,9 +47,9 @@ impl TreeMap {
         for file_metadata in row {
             let size = file_metadata.percentage * self.total_size;
             let tile_length_first_side = if should_render_horizontally {
-                (size / row_total) * self.empty_space.width as f64
+                (size / row_total) * self.empty_space.width
             } else {
-                (size / row_total) * self.empty_space.height as f64
+                (size / row_total) * self.empty_space.height
             };
 
             // we take the highest of length_of_row_second_side and length_candidate so the row will always
@@ -78,7 +78,7 @@ impl TreeMap {
             };
             progress_in_row += tile_length_first_side;
 
-            let tile = Tile::new(&rect, &file_metadata);
+            let tile = Tile::new(&rect, file_metadata);
             if tile.height < MINIMUM_HEIGHT || tile.width < MINIMUM_WIDTH {
                 self.add_unrenderable_tile(&tile);
             } else {

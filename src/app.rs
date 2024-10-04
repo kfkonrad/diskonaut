@@ -1,4 +1,4 @@
-use ::std::fs::{self, Metadata};
+use ::std::fs::Metadata;
 use ::std::mem::ManuallyDrop;
 use ::std::path::PathBuf;
 use ::std::sync::mpsc::{Receiver, SyncSender};
@@ -7,7 +7,7 @@ use ::tui::backend::Backend;
 use crate::messages::{handle_instructions, Instruction};
 use crate::state::files::{FileOrFolder, FileTree, Folder};
 use crate::state::tiles::Board;
-use crate::state::{FileToDelete, UiEffects};
+use crate::state::UiEffects;
 use crate::ui::Display;
 use crate::Event;
 
@@ -16,10 +16,7 @@ pub enum UiMode {
     Loading,
     Normal,
     ScreenTooSmall,
-    DeleteFile(FileToDelete),
-    ErrorMessage(String),
     Exiting { app_loaded: bool },
-    WarningMessage(FileToDelete),
 }
 
 pub struct App<B>
@@ -34,7 +31,6 @@ where
     display: Display<B>,
     event_sender: SyncSender<Event>,
     ui_effects: UiEffects,
-    delete_confirmation_disabled: bool,
 }
 
 impl<B> App<B>
@@ -46,11 +42,10 @@ where
         path_in_filesystem: PathBuf,
         event_sender: SyncSender<Event>,
         show_apparent_size: bool,
-        disable_delete_confirmation: bool,
     ) -> Self {
         let display = Display::new(terminal_backend);
-        let board = Board::new(&Folder::new(&path_in_filesystem));
-        let base_folder = Folder::new(&path_in_filesystem);
+        let board = Board::new(&Folder::new());
+        let base_folder = Folder::new();
         let file_tree = ManuallyDrop::new(FileTree::new(
             base_folder,
             path_in_filesystem,
@@ -67,7 +62,6 @@ where
             ui_mode: UiMode::Loading,
             event_sender,
             ui_effects,
-            delete_confirmation_disabled: disable_delete_confirmation,
         }
     }
     pub fn start(&mut self, receiver: Receiver<Instruction>) {
@@ -76,7 +70,7 @@ where
     }
     pub fn render_and_update_board(&mut self) {
         let current_folder = self.file_tree.get_current_folder();
-        self.board.change_files(&current_folder);
+        self.board.change_files(current_folder);
         self.render();
     }
     pub fn increment_loading_progress_indicator(&mut self) {
@@ -93,12 +87,6 @@ where
             &self.ui_mode,
             &self.ui_effects,
         );
-    }
-    pub fn flash_space_freed(&mut self) {
-        self.ui_effects.flash_space_freed = true;
-    }
-    pub fn unflash_space_freed(&mut self) {
-        self.ui_effects.flash_space_freed = false;
     }
     pub fn set_path_to_red(&mut self) {
         self.ui_effects.current_path_is_red = true;
@@ -128,12 +116,6 @@ where
                 }
             }
         };
-    }
-    pub fn show_warning_modal(&mut self) {
-        if let Some(file_to_delete) = self.get_file_to_delete() {
-            self.ui_mode = UiMode::WarningMessage(file_to_delete);
-            self.render();
-        }
     }
     pub fn prompt_exit(&mut self) {
         self.ui_mode = UiMode::Exiting {
@@ -175,10 +157,10 @@ where
         self.board.record_current_index_and_zoom_level();
         if let Some(tile) = &self.board.currently_selected() {
             let selected_name = &tile.name;
-            if let Some(file_or_folder) = self.file_tree.item_in_current_folder(&selected_name) {
+            if let Some(file_or_folder) = self.file_tree.item_in_current_folder(selected_name) {
                 match file_or_folder {
                     FileOrFolder::Folder(_) => {
-                        self.file_tree.enter_folder(&selected_name);
+                        self.file_tree.enter_folder(selected_name);
                         self.board.reset_zoom_index();
                         self.board.reset_selected_index();
                         self.render_and_update_board();
@@ -201,70 +183,6 @@ where
             let _ = self.event_sender.try_send(Event::PathError);
         }
     }
-    pub fn get_file_to_delete(&self) -> Option<FileToDelete> {
-        let currently_selected = self.board.currently_selected()?;
-        let mut path_to_file = self.file_tree.current_folder_names.clone();
-        path_to_file.push(currently_selected.name.clone());
-        let file_to_delete = FileToDelete {
-            path_in_filesystem: self.file_tree.path_in_filesystem.clone(),
-            path_to_file,
-            file_type: currently_selected.file_type,
-            num_descendants: currently_selected.descendants,
-            size: currently_selected.size,
-        };
-        Some(file_to_delete)
-    }
-    pub fn prompt_file_deletion(&mut self) {
-        if let Some(file_to_delete) = self.get_file_to_delete() {
-            self.ui_mode = UiMode::DeleteFile(file_to_delete.clone());
-
-            if self.delete_confirmation_disabled {
-                // Here we just delete the file.
-                // As we have set the UI mode above we will get the deletion in progress message box instead of the prompt.
-                self.delete_file(&file_to_delete);
-            } else {
-                // Here we will render which will display the confirmation prompt
-                self.render();
-            }
-        }
-    }
-    pub fn normal_mode(&mut self) {
-        self.ui_mode = UiMode::Normal;
-        self.render_and_update_board();
-    }
-    pub fn delete_file(&mut self, file_to_delete: &FileToDelete) {
-        self.ui_effects.deletion_in_progress = true;
-        self.render();
-        self.ui_effects.deletion_in_progress = false;
-
-        let full_path = file_to_delete.full_path();
-        match fs::metadata(&full_path) {
-            Ok(metadata) => {
-                let file_type = metadata.file_type();
-                let file_removed = if file_type.is_dir() {
-                    fs::remove_dir_all(&full_path)
-                } else {
-                    fs::remove_file(&full_path)
-                };
-                match file_removed {
-                    Ok(_) => {
-                        self.remove_file_from_ui(file_to_delete);
-                        self.ui_mode = UiMode::Normal;
-                        self.render_and_update_board();
-                        let _ = self.event_sender.try_send(Event::FileDeleted);
-                    }
-                    Err(msg) => {
-                        self.ui_mode = UiMode::ErrorMessage(format!("{}", msg));
-                        self.render();
-                    }
-                };
-            }
-            Err(msg) => {
-                self.ui_mode = UiMode::ErrorMessage(format!("{}", msg));
-                self.render();
-            }
-        }
-    }
     pub fn increment_failed_to_read(&mut self) {
         self.file_tree.failed_to_read += 1;
     }
@@ -282,10 +200,5 @@ where
         let current_folder = self.file_tree.get_current_folder();
         self.board.reset_zoom(current_folder);
         self.render();
-    }
-    fn remove_file_from_ui(&mut self, file_to_delete: &FileToDelete) {
-        self.file_tree.space_freed += file_to_delete.size;
-        self.file_tree.delete_file(file_to_delete);
-        self.board.reset_selected_index();
     }
 }

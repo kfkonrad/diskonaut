@@ -60,7 +60,7 @@ impl ConfirmBox {
     }
 }
 
-impl<'a> Widget for ConfirmBox {
+impl Widget for ConfirmBox {
     fn render(self, area: Rect, buf: &mut Buffer) {
         let (width, height) = if area.width > 150 {
             (150, 10)

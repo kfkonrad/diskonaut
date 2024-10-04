@@ -10,12 +10,6 @@ pub struct ErrorBox<'a> {
     error_message: &'a str,
 }
 
-impl<'a> ErrorBox<'a> {
-    pub fn new(error_message: &'a str) -> Self {
-        Self { error_message }
-    }
-}
-
 impl<'a> Widget for ErrorBox<'a> {
     fn render(self, area: Rect, buf: &mut Buffer) {
         let (width, height) = if area.width > 150 {
