@@ -44,6 +44,9 @@ macro_rules! key {
 
 pub fn handle_keypress_loading_mode<B: Backend>(evt: Event, app: &mut App<B>) {
     match evt {
+        key!(shift 'Q') => {
+            app.exit();
+        }
         key!(ctrl 'c') | key!(char 'q') => {
             app.prompt_exit();
         }
@@ -83,6 +86,9 @@ pub fn handle_keypress_loading_mode<B: Backend>(evt: Event, app: &mut App<B>) {
 
 pub fn handle_keypress_normal_mode<B: Backend>(evt: Event, app: &mut App<B>) {
     match evt {
+        key!(shift 'Q') => {
+            app.exit();
+        }
         key!(ctrl 'c') | key!(char 'q') => {
             app.prompt_exit();
         }
@@ -156,13 +162,13 @@ pub fn handle_keypress_screen_too_small<B: Backend>(evt: Event, app: &mut App<B>
 
 pub fn handle_keypress_exiting_mode<B: Backend>(evt: Event, app: &mut App<B>) {
     match evt {
-        key!(ctrl 'c') | key!(char 'q') | key!(Esc) | key!(char 'n') => {
+        key!(Esc) | key!(char 'n') => {
             app.reset_ui_mode();
             // we have to manually call render here to make sure ui gets updated
             // because reset_ui_mode does not call it itself
             app.render();
         }
-        key!(char 'y') => {
+        key!(ctrl 'c') | key!(char 'q') | key!(shift 'Q') | key!(char 'y') => {
             app.exit();
         }
         _ => (),
