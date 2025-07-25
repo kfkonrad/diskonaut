@@ -26,7 +26,8 @@ use ::structopt::StructOpt;
 use ratatui::backend::Backend;
 use crossterm::event::KeyModifiers;
 use crossterm::event::{Event as BackEvent, KeyCode, KeyEvent};
-use crossterm::terminal::{disable_raw_mode, enable_raw_mode};
+use crossterm::terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen};
+use crossterm::execute;
 use ratatui::backend::CrosstermBackend;
 
 use app::{App, UiMode};
@@ -74,8 +75,9 @@ fn try_main() -> Result<(), failure::Error> {
     let opts = Opt::from_args();
 
     match get_stdout() {
-        Ok(stdout) => {
+        Ok(mut stdout) => {
             enable_raw_mode()?;
+            execute!(stdout, EnterAlternateScreen)?;
             let terminal_backend = CrosstermBackend::new(stdout);
             let terminal_events = TerminalEvents {};
             let folder = match opts.folder {
@@ -95,6 +97,8 @@ fn try_main() -> Result<(), failure::Error> {
         }
         Err(_) => failure::bail!("Failed to get stdout: are you trying to pipe 'diskonaut'?"),
     }
+    let mut stdout = get_stdout()?;
+    execute!(stdout, LeaveAlternateScreen)?;
     disable_raw_mode()?;
     Ok(())
 }
