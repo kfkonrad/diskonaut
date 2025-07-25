@@ -2,7 +2,7 @@ use ::std::ffi::OsString;
 
 use crate::state::files::{FileOrFolder, Folder};
 
-#[derive(Copy, Clone, Debug, PartialEq)]
+#[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub enum FileType {
     File,
     Folder,
@@ -40,8 +40,8 @@ pub fn files_in_folder(folder: &Folder, offset: usize) -> Vec<FileMetadata> {
             };
             let percentage = calculate_percentage(size, total_size, folder.contents.len());
             FileMetadata {
-                size,
                 name,
+                size,
                 descendants,
                 percentage,
                 file_type,
@@ -49,7 +49,7 @@ pub fn files_in_folder(folder: &Folder, offset: usize) -> Vec<FileMetadata> {
         });
     }
     files.sort_by(|a, b| {
-        if a.percentage == b.percentage {
+        if (a.percentage - b.percentage).abs() < 10e-9 {
             a.name.partial_cmp(&b.name).expect("could not compare name")
         } else {
             b.percentage
@@ -62,9 +62,9 @@ pub fn files_in_folder(folder: &Folder, offset: usize) -> Vec<FileMetadata> {
         let number_of_files_without_removed_contents = folder.contents.len() - removed_items.len();
         let removed_size = removed_items.fold(0, |acc, file| acc + file.size);
         let size_without_removed_items = total_size - removed_size;
-        for i in 0..files.len() {
-            files[i].percentage = calculate_percentage(
-                files[i].size,
+        for file in &mut files {
+            file.percentage = calculate_percentage(
+                file.size,
                 size_without_removed_items,
                 number_of_files_without_removed_contents,
             );

@@ -19,7 +19,7 @@ filesize = "0.2.0"
 unicode-width = "0.2.0"
 nix = { version = "0.30.1", features = ["user"] }
 [target.'cfg(windows)'.dependencies]
-winapi = { version = "0.3", features = ["securitybaseapi","debugapi"] }
+is_elevated = "0.1.2"
 
 [dev-dependencies]
 insta = "1.43.1"
@@ -30,3 +30,12 @@ lto = true        # Enable Link Time Optimisation
 codegen-units = 1 # Reduced to increase optimisations.
 panic = 'abort'   # Abort on panic
 strip = "symbols" # Strip symbols from binary
+
+[lints.rust]
+unsafe_code = "forbid"
+
+[lints.clippy]
+enum_glob_use = "deny"
+pedantic = "deny"
+nursery = "deny"
+unwrap_used = "deny"

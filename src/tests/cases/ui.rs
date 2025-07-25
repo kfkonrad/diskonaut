@@ -52,7 +52,7 @@ const DELETE_CONFIRMATION_DISABLED: bool = true;
 fn create_root_temp_dir(name: &str) -> Result<PathBuf, failure::Error> {
     let mut dir = PathBuf::new();
     dir.push(String::from("/tmp/diskonaut_tests")); // TODO: fix this for other platforms
-    dir.push(name.to_string());
+    dir.push(name);
 
     remove_dir_all(&dir).ok(); // atomic remove
     create_dir_all(&dir)?;
@@ -97,7 +97,7 @@ fn two_large_files_one_small_file() {
     );
     std::fs::remove_dir_all(temp_dir_path).expect("failed to remove temporary folder");
     let terminal_draw_events_mirror = terminal_draw_events.lock().unwrap();
-    let expected_terminal_events = vec![
+    let expected_terminal_events = [
         Clear, HideCursor, Draw, HideCursor, Flush, Draw, HideCursor, Flush, Clear, ShowCursor,
     ];
     assert_eq!(
@@ -137,7 +137,7 @@ fn medium_width() {
     );
     std::fs::remove_dir_all(temp_dir_path).expect("failed to remove temporary folder");
     let terminal_draw_events_mirror = terminal_draw_events.lock().unwrap();
-    let expected_terminal_events = vec![
+    let expected_terminal_events = [
         Clear, HideCursor, Draw, HideCursor, Flush, Draw, HideCursor, Flush, Clear, ShowCursor,
     ];
     assert_eq!(
@@ -177,7 +177,7 @@ fn small_width() {
     );
     std::fs::remove_dir_all(temp_dir_path).expect("failed to remove temporary folder");
     let terminal_draw_events_mirror = terminal_draw_events.lock().unwrap();
-    let expected_terminal_events = vec![
+    let expected_terminal_events = [
         Clear, HideCursor, Draw, HideCursor, Flush, Draw, HideCursor, Flush, Clear, ShowCursor,
     ];
     assert_eq!(
@@ -218,7 +218,7 @@ fn small_width_long_folder_name() {
     );
     std::fs::remove_dir_all(temp_dir_path).expect("failed to remove temporary folder");
     let terminal_draw_events_mirror = terminal_draw_events.lock().unwrap();
-    let expected_terminal_events = vec![
+    let expected_terminal_events = [
         Clear, HideCursor, Draw, HideCursor, Flush, Draw, HideCursor, Flush, Clear, ShowCursor,
     ];
     assert_eq!(
@@ -259,7 +259,7 @@ fn too_small_width_one() {
     );
     std::fs::remove_dir_all(temp_dir_path).expect("failed to remove temporary folder");
     let terminal_draw_events_mirror = terminal_draw_events.lock().unwrap();
-    let expected_terminal_events = vec![
+    let expected_terminal_events = [
         Clear, HideCursor, Draw, HideCursor, Flush, Clear, ShowCursor,
     ];
     assert_eq!(
@@ -299,7 +299,7 @@ fn too_small_width_two() {
     );
     std::fs::remove_dir_all(temp_dir_path).expect("failed to remove temporary folder");
     let terminal_draw_events_mirror = terminal_draw_events.lock().unwrap();
-    let expected_terminal_events = vec![
+    let expected_terminal_events = [
         Clear, HideCursor, Draw, HideCursor, Flush, Clear, ShowCursor,
     ];
     assert_eq!(
@@ -327,7 +327,7 @@ fn too_small_width_three() {
     );
     std::fs::remove_dir_all(temp_dir_path).expect("failed to remove temporary folder");
     let terminal_draw_events_mirror = terminal_draw_events.lock().unwrap();
-    let expected_terminal_events = vec![
+    let expected_terminal_events = [
         Clear, HideCursor, Draw, HideCursor, Flush, Clear, ShowCursor,
     ];
     assert_eq!(
@@ -355,7 +355,7 @@ fn too_small_width_four() {
     );
     std::fs::remove_dir_all(temp_dir_path).expect("failed to remove temporary folder");
     let terminal_draw_events_mirror = terminal_draw_events.lock().unwrap();
-    let expected_terminal_events = vec![
+    let expected_terminal_events = [
         Clear, HideCursor, Draw, HideCursor, Flush, Clear, ShowCursor,
     ];
     assert_eq!(
@@ -383,7 +383,7 @@ fn too_small_width_five() {
     );
     std::fs::remove_dir_all(temp_dir_path).expect("failed to remove temporary folder");
     let terminal_draw_events_mirror = terminal_draw_events.lock().unwrap();
-    let expected_terminal_events = vec![
+    let expected_terminal_events = [
         Clear, HideCursor, Draw, HideCursor, Flush, Clear, ShowCursor,
     ];
     assert_eq!(
@@ -411,7 +411,7 @@ fn too_small_height() {
     );
     std::fs::remove_dir_all(temp_dir_path).expect("failed to remove temporary folder");
     let terminal_draw_events_mirror = terminal_draw_events.lock().unwrap();
-    let expected_terminal_events = vec![
+    let expected_terminal_events = [
         Clear, HideCursor, Draw, HideCursor, Flush, Clear, ShowCursor,
     ];
     assert_eq!(
@@ -455,7 +455,7 @@ fn eleven_files() {
 
     let mut file_7_path = PathBuf::from(&temp_dir_path);
     file_7_path.push("file7");
-    create_temp_file(file_7_path, 151552).expect("failed to create temp file");
+    create_temp_file(file_7_path, 151_552).expect("failed to create temp file");
 
     let mut file_8_path = PathBuf::from(&temp_dir_path);
     file_8_path.push("file8");
@@ -483,7 +483,7 @@ fn eleven_files() {
     std::fs::remove_dir_all(temp_dir_path).expect("failed to remove temporary folder");
     let terminal_draw_events_mirror = terminal_draw_events.lock().unwrap();
 
-    let expected_terminal_events = vec![
+    let expected_terminal_events = [
         Clear, HideCursor, Draw, HideCursor, Flush, Draw, HideCursor, Flush, Clear, ShowCursor,
     ];
     assert_eq!(
@@ -546,7 +546,7 @@ fn enter_folder() {
         .lock()
         .expect("could not acquire lock on terminal events");
 
-    let expected_terminal_events = vec![
+    let expected_terminal_events = [
         Clear, HideCursor, Draw, HideCursor, Flush, Draw, HideCursor, Flush, Draw, HideCursor,
         Flush, Draw, HideCursor, Flush, Clear, ShowCursor,
     ];
@@ -615,7 +615,7 @@ fn enter_folder_medium_width() {
         .lock()
         .expect("could not acquire lock on terminal events");
 
-    let expected_terminal_events = vec![
+    let expected_terminal_events = [
         Clear, HideCursor, Draw, HideCursor, Flush, Draw, HideCursor, Flush, Draw, HideCursor,
         Flush, Draw, HideCursor, Flush, Clear, ShowCursor,
     ];
@@ -685,7 +685,7 @@ fn enter_folder_small_width() {
         .lock()
         .expect("could not acquire lock on terminal events");
 
-    let expected_terminal_events = vec![
+    let expected_terminal_events = [
         Clear, HideCursor, Draw, HideCursor, Flush, Draw, HideCursor, Flush, Draw, HideCursor,
         Flush, Draw, HideCursor, Flush, Clear, ShowCursor,
     ];
@@ -711,15 +711,15 @@ fn small_files() {
 
     let mut file_1_path = PathBuf::from(&temp_dir_path);
     file_1_path.push("file1");
-    create_temp_file(file_1_path, 401408).expect("failed to create temp file");
+    create_temp_file(file_1_path, 401_408).expect("failed to create temp file");
 
     let mut file_2_path = PathBuf::from(&temp_dir_path);
     file_2_path.push("file2");
-    create_temp_file(file_2_path, 1000000).expect("failed to create temp file");
+    create_temp_file(file_2_path, 1_000_000).expect("failed to create temp file");
 
     let mut file_3_path = PathBuf::from(&temp_dir_path);
     file_3_path.push("file3");
-    create_temp_file(file_3_path, 1000000).expect("failed to create temp file");
+    create_temp_file(file_3_path, 1_000_000).expect("failed to create temp file");
 
     let mut file_4_path = PathBuf::from(&temp_dir_path);
     file_4_path.push("file4");
@@ -739,7 +739,7 @@ fn small_files() {
     std::fs::remove_dir_all(temp_dir_path).expect("failed to remove temporary folder");
     let terminal_draw_events_mirror = terminal_draw_events.lock().unwrap();
 
-    let expected_terminal_events = vec![
+    let expected_terminal_events = [
         Clear, HideCursor, Draw, HideCursor, Flush, Draw, HideCursor, Flush, Clear, ShowCursor,
     ];
     assert_eq!(
@@ -779,15 +779,15 @@ fn zoom_into_small_files() {
 
     let mut file_1_path = PathBuf::from(&temp_dir_path);
     file_1_path.push("file1");
-    create_temp_file(file_1_path, 401408).expect("failed to create temp file");
+    create_temp_file(file_1_path, 401_408).expect("failed to create temp file");
 
     let mut file_2_path = PathBuf::from(&temp_dir_path);
     file_2_path.push("file2");
-    create_temp_file(file_2_path, 1000000).expect("failed to create temp file");
+    create_temp_file(file_2_path, 1_000_000).expect("failed to create temp file");
 
     let mut file_3_path = PathBuf::from(&temp_dir_path);
     file_3_path.push("file3");
-    create_temp_file(file_3_path, 1000000).expect("failed to create temp file");
+    create_temp_file(file_3_path, 1_000_000).expect("failed to create temp file");
 
     let mut file_4_path = PathBuf::from(&temp_dir_path);
     file_4_path.push("file4");
@@ -807,7 +807,7 @@ fn zoom_into_small_files() {
     std::fs::remove_dir_all(temp_dir_path).expect("failed to remove temporary folder");
     let terminal_draw_events_mirror = terminal_draw_events.lock().unwrap();
 
-    let expected_terminal_events = vec![
+    let expected_terminal_events = [
         Clear, HideCursor, Draw, HideCursor, Flush, Draw, HideCursor, Flush, Draw, HideCursor,
         Flush, Draw, HideCursor, Flush, Draw, HideCursor, Flush, Draw, HideCursor, Flush, Draw,
         HideCursor, Flush, Draw, HideCursor, Flush, Draw, HideCursor, Flush, Clear, ShowCursor,
@@ -849,15 +849,15 @@ fn cannot_move_into_small_files() {
 
     let mut file_1_path = PathBuf::from(&temp_dir_path);
     file_1_path.push("file1");
-    create_temp_file(file_1_path, 401408).expect("failed to create temp file");
+    create_temp_file(file_1_path, 401_408).expect("failed to create temp file");
 
     let mut file_2_path = PathBuf::from(&temp_dir_path);
     file_2_path.push("file2");
-    create_temp_file(file_2_path, 1000000).expect("failed to create temp file");
+    create_temp_file(file_2_path, 1_000_000).expect("failed to create temp file");
 
     let mut file_3_path = PathBuf::from(&temp_dir_path);
     file_3_path.push("file3");
-    create_temp_file(file_3_path, 1000000).expect("failed to create temp file");
+    create_temp_file(file_3_path, 1_000_000).expect("failed to create temp file");
 
     let mut file_4_path = PathBuf::from(&temp_dir_path);
     file_4_path.push("file4");
@@ -905,7 +905,7 @@ fn cannot_move_into_small_files() {
     std::fs::remove_dir_all(temp_dir_path).expect("failed to remove temporary folder");
     let terminal_draw_events_mirror = terminal_draw_events.lock().unwrap();
 
-    let expected_terminal_events = vec![
+    let expected_terminal_events = [
         Clear, HideCursor, Draw, HideCursor, Flush, Draw, HideCursor, Flush, Draw, HideCursor,
         Flush, Draw, HideCursor, Flush, Draw, HideCursor, Flush, Clear, ShowCursor,
     ];
@@ -938,19 +938,19 @@ fn minimum_tile_sides() {
 
     for i in 0..7 {
         let mut file_path = PathBuf::from(&temp_dir_path);
-        file_path.push(format!("big_file{}", i));
-        create_temp_file(file_path, 135168).expect("failed to create temp file");
+        file_path.push(format!("big_file{i}"));
+        create_temp_file(file_path, 135_168).expect("failed to create temp file");
     }
 
     for i in 0..2 {
         let mut file_path = PathBuf::from(&temp_dir_path);
-        file_path.push(format!("medium_file{}", i));
+        file_path.push(format!("medium_file{i}"));
         create_temp_file(file_path, 8192).expect("failed to create temp file");
     }
 
     for i in 0..50 {
         let mut file_path = PathBuf::from(&temp_dir_path);
-        file_path.push(format!("file{}", i));
+        file_path.push(format!("file{i}"));
         create_temp_file(file_path, 4096).expect("failed to create temp file");
     }
 
@@ -964,7 +964,7 @@ fn minimum_tile_sides() {
     std::fs::remove_dir_all(temp_dir_path).expect("failed to remove temporary folder");
     let terminal_draw_events_mirror = terminal_draw_events.lock().unwrap();
 
-    let expected_terminal_events = vec![
+    let expected_terminal_events = [
         Clear, HideCursor, Draw, HideCursor, Flush, Draw, HideCursor, Flush, Clear, ShowCursor,
     ];
 
@@ -1030,7 +1030,7 @@ fn move_down_and_enter_folder() {
         .lock()
         .expect("could not acquire lock on terminal events");
 
-    let expected_terminal_events = vec![
+    let expected_terminal_events = [
         Clear, HideCursor, Draw, HideCursor, Flush, Draw, HideCursor, Flush, Draw, HideCursor,
         Flush, Draw, HideCursor, Flush, Draw, HideCursor, Flush, Clear, ShowCursor,
     ];
@@ -1096,7 +1096,7 @@ fn noop_when_entering_file() {
         .lock()
         .expect("could not acquire lock on terminal events");
 
-    let expected_terminal_events = vec![
+    let expected_terminal_events = [
         Clear, HideCursor, Draw, HideCursor, Flush, Draw, HideCursor, Flush, Draw, HideCursor,
         Flush, Draw, HideCursor, Flush, Clear, ShowCursor,
     ];
@@ -1169,7 +1169,7 @@ fn move_up_and_enter_folder() {
         .lock()
         .expect("could not acquire lock on terminal events");
 
-    let expected_terminal_events = vec![
+    let expected_terminal_events = [
         Clear, HideCursor, Draw, HideCursor, Flush, Draw, HideCursor, Flush, Draw, HideCursor,
         Flush, Draw, HideCursor, Flush, Draw, HideCursor, Flush, Draw, HideCursor, Flush, Clear,
         ShowCursor,
@@ -1242,7 +1242,7 @@ fn move_right_and_enter_folder() {
         .lock()
         .expect("could not acquire lock on terminal events");
 
-    let expected_terminal_events = vec![
+    let expected_terminal_events = [
         Clear, HideCursor, Draw, HideCursor, Flush, Draw, HideCursor, Flush, Draw, HideCursor,
         Flush, Draw, HideCursor, Flush, Draw, HideCursor, Flush, Clear, ShowCursor,
     ];
@@ -1315,7 +1315,7 @@ fn move_left_and_enter_folder() {
         .lock()
         .expect("could not acquire lock on terminal events");
 
-    let expected_terminal_events = vec![
+    let expected_terminal_events = [
         Clear, HideCursor, Draw, HideCursor, Flush, Draw, HideCursor, Flush, Draw, HideCursor,
         Flush, Draw, HideCursor, Flush, Draw, HideCursor, Flush, Draw, HideCursor, Flush, Clear,
         ShowCursor,
@@ -1384,7 +1384,7 @@ fn enter_largest_folder_with_no_selected_tile() {
         .lock()
         .expect("could not acquire lock on terminal events");
 
-    let expected_terminal_events = vec![
+    let expected_terminal_events = [
         Clear, HideCursor, Draw, HideCursor, Flush, Draw, HideCursor, Flush, Draw, HideCursor,
         Flush, Clear, ShowCursor,
     ];
@@ -1445,7 +1445,7 @@ fn clear_selection_when_moving_off_screen_edges() {
         .lock()
         .expect("could not acquire lock on terminal events");
 
-    let expected_terminal_events = vec![
+    let expected_terminal_events = [
         Clear, HideCursor, Draw, HideCursor, Flush, Draw, HideCursor, Flush, Draw, HideCursor,
         Flush, Draw, HideCursor, Flush, Draw, HideCursor, Flush, Clear, ShowCursor,
     ];
@@ -1519,7 +1519,7 @@ fn esc_to_go_up() {
         .lock()
         .expect("could not acquire lock on terminal events");
 
-    let expected_terminal_events = vec![
+    let expected_terminal_events = [
         Clear, HideCursor, Draw, HideCursor, Flush, Draw, HideCursor, Flush, Draw, HideCursor,
         Flush, Draw, HideCursor, Flush, Draw, HideCursor, Flush, Draw, HideCursor, Flush, Clear,
         ShowCursor,
@@ -2745,7 +2745,7 @@ fn files_with_size_zero() {
     );
     std::fs::remove_dir_all(temp_dir_path).expect("failed to remove temporary folder");
     let terminal_draw_events_mirror = terminal_draw_events.lock().unwrap();
-    let expected_terminal_events = vec![
+    let expected_terminal_events = [
         Clear, HideCursor, Draw, HideCursor, Flush, Draw, HideCursor, Flush, Clear, ShowCursor,
     ];
     assert_eq!(
@@ -2773,7 +2773,7 @@ fn empty_folder() {
     );
     std::fs::remove_dir_all(temp_dir_path).expect("failed to remove temporary folder");
     let terminal_draw_events_mirror = terminal_draw_events.lock().unwrap();
-    let expected_terminal_events = vec![
+    let expected_terminal_events = [
         Clear, HideCursor, Draw, HideCursor, Flush, Draw, HideCursor, Flush, Clear, ShowCursor,
     ];
     assert_eq!(
@@ -2970,11 +2970,11 @@ fn small_files_with_y_as_zero() {
 
     let mut file_1_path = PathBuf::from(&temp_dir_path);
     file_1_path.push("file1");
-    create_temp_file(file_1_path, 1048576).expect("failed to create temp file");
+    create_temp_file(file_1_path, 1_048_576).expect("failed to create temp file");
 
     for i in 1..100 {
         let mut small_file_path = PathBuf::from(&temp_dir_path);
-        small_file_path.push(format!("small_file{}", i));
+        small_file_path.push(format!("small_file{i}"));
         create_temp_file(small_file_path, 4096).expect("failed to create temp file");
     }
 
@@ -2987,7 +2987,7 @@ fn small_files_with_y_as_zero() {
     );
     std::fs::remove_dir_all(temp_dir_path).expect("failed to remove temporary folder");
     let terminal_draw_events_mirror = terminal_draw_events.lock().unwrap();
-    let expected_terminal_events = vec![
+    let expected_terminal_events = [
         Clear, HideCursor, Draw, HideCursor, Flush, Draw, HideCursor, Flush, Clear, ShowCursor,
     ];
     assert_eq!(
@@ -3009,15 +3009,15 @@ fn small_files_with_x_as_zero() {
 
     let mut file_1_path = PathBuf::from(&temp_dir_path);
     file_1_path.push("file1");
-    create_temp_file(file_1_path, 1048576).expect("failed to create temp file");
+    create_temp_file(file_1_path, 1_048_576).expect("failed to create temp file");
 
     let mut file_2_path = PathBuf::from(&temp_dir_path);
     file_2_path.push("file2");
-    create_temp_file(file_2_path, 1048576).expect("failed to create temp file");
+    create_temp_file(file_2_path, 1_048_576).expect("failed to create temp file");
 
     for i in 1..100 {
         let mut small_file_path = PathBuf::from(&temp_dir_path);
-        small_file_path.push(format!("small_file{}", i));
+        small_file_path.push(format!("small_file{i}"));
         create_temp_file(small_file_path, 4096).expect("failed to create temp file");
     }
 
@@ -3030,7 +3030,7 @@ fn small_files_with_x_as_zero() {
     );
     std::fs::remove_dir_all(temp_dir_path).expect("failed to remove temporary folder");
     let terminal_draw_events_mirror = terminal_draw_events.lock().unwrap();
-    let expected_terminal_events = vec![
+    let expected_terminal_events = [
         Clear, HideCursor, Draw, HideCursor, Flush, Draw, HideCursor, Flush, Clear, ShowCursor,
     ];
     assert_eq!(

@@ -316,12 +316,12 @@ dependencies = [
  "failure",
  "filesize",
  "insta",
+ "is_elevated",
  "jwalk",
  "nix",
  "ratatui",
  "structopt",
  "unicode-width 0.2.0",
- "winapi",
 ]
 
 [[package]]
@@ -479,6 +479,15 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn 2.0.104",
+]
+
+[[package]]
+name = "is_elevated"
+version = "0.1.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5299060ff5db63e788015dcb9525ad9b84f4fd9717ed2cbdeba5018cbf42f9b5"
+dependencies = [
+ "winapi",
 ]
 
 [[package]]

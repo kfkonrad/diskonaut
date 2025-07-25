@@ -120,7 +120,7 @@ pub struct BottomLine<'a> {
 }
 
 impl<'a> BottomLine<'a> {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self {
             hide_delete: false,
             hide_small_files_legend: false,
@@ -128,25 +128,25 @@ impl<'a> BottomLine<'a> {
             last_read_path: None,
         }
     }
-    pub fn hide_delete(mut self) -> Self {
+    pub const fn hide_delete(mut self) -> Self {
         self.hide_delete = true;
         self
     }
-    pub fn hide_small_files_legend(mut self, should_hide_small_files_legend: bool) -> Self {
+    pub const fn hide_small_files_legend(mut self, should_hide_small_files_legend: bool) -> Self {
         self.hide_small_files_legend = should_hide_small_files_legend;
         self
     }
-    pub fn currently_selected(mut self, currently_selected: Option<&'a Tile>) -> Self {
+    pub const fn currently_selected(mut self, currently_selected: Option<&'a Tile>) -> Self {
         self.currently_selected = currently_selected;
         self
     }
-    pub fn last_read_path(mut self, last_read_path: Option<&'a PathBuf>) -> Self {
+    pub const fn last_read_path(mut self, last_read_path: Option<&'a PathBuf>) -> Self {
         self.last_read_path = last_read_path;
         self
     }
 }
 
-impl<'a> Widget for BottomLine<'a> {
+impl Widget for BottomLine<'_> {
     fn render(self, area: Rect, buf: &mut Buffer) {
         let small_files_legend = "(x = Small files)";
         let small_files_len = if self.hide_small_files_legend {
