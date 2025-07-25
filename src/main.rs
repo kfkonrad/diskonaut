@@ -24,7 +24,7 @@ use ::std::io;
 use ::std::path::PathBuf;
 use ::std::process;
 use ::std::sync::atomic::{AtomicBool, Ordering};
-use ::std::sync::mpsc;
+use ::std::sync::mpsc::{self, TrySendError};
 use ::std::sync::mpsc::{Receiver, SyncSender};
 use ::std::sync::Arc;
 use ::std::thread::park_timeout;
@@ -291,24 +291,41 @@ fn spawn_scanner_thread(
                     .skip_hidden(false)
                     .follow_links(false)
                 {
-                    let instruction_sent = match entry {
+                    let instruction = match entry {
                         Ok(entry) => match entry.metadata() {
                             Ok(file_metadata) => {
                                 let entry_path = entry.path();
-                                instruction_sender.send(Instruction::AddEntryToBaseFolder((
-                                    file_metadata,
-                                    entry_path,
-                                )))
+                                Instruction::AddEntryToBaseFolder((file_metadata, entry_path))
                             }
-                            Err(_) => instruction_sender.send(Instruction::IncrementFailedToRead),
+                            Err(_) => Instruction::IncrementFailedToRead,
                         },
-                        Err(_) => instruction_sender.send(Instruction::IncrementFailedToRead),
+                        Err(_) => Instruction::IncrementFailedToRead,
                     };
-                    if instruction_sent.is_err() {
-                        break 'scanning;
+
+                    // Retry with backoff up to a reasonable limit
+                    let mut retry_count = 0;
+                    let max_retries = 1_000; // ~10 seconds at 10ms per retry
+                    let mut current_instruction = instruction;
+
+                    loop {
+                        match instruction_sender.try_send(current_instruction) {
+                            Ok(()) => break, // Success, move to next entry
+                            Err(TrySendError::Disconnected(_)) => break 'scanning, // App quit
+                            Err(TrySendError::Full(returned_instruction)) => {
+                                retry_count += 1;
+                                if retry_count > max_retries {
+                                    // We've tried for ~10 seconds, something is seriously wrong
+                                    // This should never happen in normal operation
+                                    eprintln!("Warning: Scanner giving up on entry after {max_retries} retries");
+                                    break; // Skip this entry to avoid infinite loop
+                                }
+                                current_instruction = returned_instruction;
+                                park_timeout(time::Duration::from_millis(10));
+                            }
+                        }
                     }
                 }
-                let _ = instruction_sender.send(Instruction::StartUi);
+                let _ = instruction_sender.try_send(Instruction::StartUi);
                 loaded.store(true, Ordering::Release);
             })
             .expect("Failed to spawn thread"),

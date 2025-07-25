@@ -147,7 +147,7 @@ where
         // because we want to make sure that if the receiver
         // is active, it received this event so that the app
         // would exit cleanly
-        let _ = self.event_sender.send(Event::AppExit);
+        let _ = self.event_sender.try_send(Event::AppExit);
     }
     pub fn handle_enter(&mut self) {
         if !self.board.has_selected_index() {
