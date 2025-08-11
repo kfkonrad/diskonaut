@@ -6,8 +6,23 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
+## [0.12.0] - 2025-08-11
+
 ### Added
 * Only show "Small Files" legend when there are small files on screen (https://github.com/imsnif/diskonaut/pull/75) - [@pjsier](https://github.com/pjsier)
+* Quit immediately by pressing Shift+Q
+* On the quitting confirmation window Q, CTRL+C and Y will now all count as confirmation instead of just Y
+* The quitting confirmation window can now be invoked by pressing CTRL+C in addition to Q
+
+### Changed
+* Refactor codebase with strict linting
+* Update all dependencies to latest versions
+* Optimize size of binary
+* Ensure static binary build
+
+### Fixed
+* Do not print extraneous whitespace when quitting
+* Do not hang indefinitely when quitting diskonaut during scan phase
 
 ## [0.11.0] - 2020-09-23
 

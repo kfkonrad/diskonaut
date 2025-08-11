@@ -1,5 +1,5 @@
 .cargo/
-.cargo/config.toml
+!.cargo/config.toml
 target/
 vendor/
 vendor.tar
