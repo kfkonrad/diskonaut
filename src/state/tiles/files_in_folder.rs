@@ -1,5 +1,7 @@
 use ::std::ffi::OsString;
 
+use float_cmp::approx_eq;
+
 use crate::state::files::{FileOrFolder, Folder};
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
@@ -49,12 +51,11 @@ pub fn files_in_folder(folder: &Folder, offset: usize) -> Vec<FileMetadata> {
         });
     }
     files.sort_by(|a, b| {
-        if (a.percentage - b.percentage).abs() < 10e-9 {
-            a.name.partial_cmp(&b.name).expect("could not compare name")
+        if approx_eq!(f64, a.percentage, b.percentage) {
+            a.name.cmp(&b.name)
         } else {
             b.percentage
-                .partial_cmp(&a.percentage)
-                .expect("could not compare percentage")
+                .total_cmp(&a.percentage)
         }
     });
     if offset > 0 {
