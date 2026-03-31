@@ -1,0 +1,25 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6.0.2
+      - uses: actions-rust-lang/setup-rust-toolchain@v1.15.4
+      - uses: mlugg/setup-zig@v2.2.1
+        with:
+          version: 0.15.1
+      - uses: goreleaser/goreleaser-action@v7.0.0
+        with:
+          args: release --clean
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
