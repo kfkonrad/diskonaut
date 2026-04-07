@@ -16,7 +16,6 @@ mod os;
 mod state;
 mod ui;
 
-use ::failure;
 use ::jwalk::Parallelism::{RayonDefaultPool, Serial};
 use ::jwalk::WalkDir;
 use ::std::env;
@@ -29,7 +28,7 @@ use ::std::sync::mpsc::{Receiver, SyncSender};
 use ::std::sync::Arc;
 use ::std::thread::park_timeout;
 use ::std::{thread, time};
-use ::structopt::StructOpt;
+use clap::Parser;
 
 use crossterm::event::KeyModifiers;
 use crossterm::event::{Event as BackEvent, KeyCode, KeyEvent};
@@ -57,16 +56,16 @@ const SHOULD_SCAN_HD_FILES_IN_MULTIPLE_THREADS: bool = true;
 #[cfg(test)]
 const SHOULD_SCAN_HD_FILES_IN_MULTIPLE_THREADS: bool = false;
 
-#[derive(StructOpt, Debug)]
-#[structopt(name = "diskonaut")]
+#[derive(Parser, Debug)]
+#[command(name = "diskonaut")]
 pub struct Opt {
-    #[structopt(name = "folder", parse(from_os_str))]
+    #[arg(name = "folder")]
     /// The folder to scan
     folder: Option<PathBuf>,
-    #[structopt(short, long)]
+    #[arg(short, long)]
     /// Show file sizes rather than their block usage on disk
     apparent_size: bool,
-    #[structopt(short, long)]
+    #[arg(short, long)]
     /// Don't ask for confirmation before deleting
     disable_delete_confirmation: bool,
 }
@@ -81,8 +80,8 @@ fn get_stdout() -> io::Stdout {
     io::stdout()
 }
 
-fn try_main() -> Result<(), failure::Error> {
-    let opts = Opt::from_args();
+fn try_main() -> anyhow::Result<()> {
+    let opts = Opt::parse();
 
     let mut stdout = get_stdout();
     {
@@ -95,7 +94,7 @@ fn try_main() -> Result<(), failure::Error> {
             None => env::current_dir()?,
         };
         if !folder.as_path().is_dir() {
-            failure::bail!("Folder '{}' does not exist", folder.to_string_lossy())
+            anyhow::bail!("Folder '{}' does not exist", folder.to_string_lossy())
         }
         start(
             terminal_backend,
