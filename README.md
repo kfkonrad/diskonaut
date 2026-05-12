@@ -21,13 +21,11 @@ session.
 
 ## Install
 
-Install with cargo or download the latest version from the GitHub Releases. Note that the  precompiled binaries are
+Install with cargo or download the latest version from the GitHub Releases. Note that the precompiled binaries are
 optimized for small binary size (see `.goreleaser.yaml` for how exactly).
 
 ```sh
-git clone https://github.com/kfkonrad/diskonaut.git
-cd diskonaut
-cargo install --path .
+cargo install diskonaut-x
 ```
 
 ## Usage
