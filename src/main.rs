@@ -57,7 +57,7 @@ const SHOULD_SCAN_HD_FILES_IN_MULTIPLE_THREADS: bool = true;
 const SHOULD_SCAN_HD_FILES_IN_MULTIPLE_THREADS: bool = false;
 
 #[derive(Parser, Debug)]
-#[command(name = "diskonaut")]
+#[command(name = "diskonaut", version, disable_version_flag = true)]
 pub struct Opt {
     #[arg(name = "folder")]
     /// The folder to scan
@@ -68,6 +68,9 @@ pub struct Opt {
     #[arg(short, long)]
     /// Don't ask for confirmation before deleting
     disable_delete_confirmation: bool,
+    #[arg(short = 'v', long, action = clap::ArgAction::Version)]
+    /// Print version information
+    version: bool,
 }
 
 fn main() {

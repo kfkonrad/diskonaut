@@ -6,6 +6,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
+## [1.0.0]
+
+### Added
+* Add `-v`/`--version` flag to display version
+
+### Changed
+* Update dependencies to latest versions
+* Change crate version for publication as diskonaut-x (the binary will still be called diskonaut)
+
+### Fixed
+* Fixed issue where failing string conversions in paths could kill diskonaut
+* Fixed truncation of strings with multi-byte unicode characters
+
 ## [0.12.2] - 2026-03-31
 
 ### Changed
