@@ -1,7 +1,7 @@
 [package]
 name = "diskonaut-x"
 description = "Terminal disk space visual navigator"
-version = "1.0.0"
+version = "1.0.1"
 authors = ["Aram Drevekenin <aram@poor.dev>", "Kevin Konrad <info@kevinkonrad.de>"]
 readme = "README.md"
 homepage = "https://github.com/kfkonrad/diskonaut"

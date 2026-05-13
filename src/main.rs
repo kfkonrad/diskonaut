@@ -70,7 +70,7 @@ pub struct Opt {
     disable_delete_confirmation: bool,
     #[arg(short = 'v', long, action = clap::ArgAction::Version)]
     /// Print version information
-    version: bool,
+    version: Option<bool>,
 }
 
 fn main() {
