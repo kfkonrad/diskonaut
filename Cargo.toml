@@ -1,7 +1,7 @@
 [package]
 name = "diskonaut-x"
 description = "Terminal disk space visual navigator"
-version = "1.0.1"
+version = "1.0.2"
 authors = ["Aram Drevekenin <aram@poor.dev>", "Kevin Konrad <info@kevinkonrad.de>"]
 readme = "README.md"
 homepage = "https://github.com/kfkonrad/diskonaut"
@@ -30,7 +30,7 @@ float-cmp = "0.10.0"
 is_elevated = "0.1.2"
 
 [dev-dependencies]
-insta = "1.47.2"
+insta = "1.48.0"
 
 [profile.release]
 opt-level = 'z'   # Optimize for size.
