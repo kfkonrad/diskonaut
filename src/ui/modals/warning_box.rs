@@ -76,9 +76,10 @@ impl Widget for WarningBox {
 
         for line in &controls_text {
             if text_max_length >= line.chars().count() as u16 {
-                let start_position =
-                    (f64::from(warning_rect.width - line.chars().count() as u16) / 2.0).ceil() as u16
-                        + warning_rect.x;
+                let start_position = (f64::from(warning_rect.width - line.chars().count() as u16)
+                    / 2.0)
+                    .ceil() as u16
+                    + warning_rect.x;
                 buf.set_string(
                     start_position,
                     warning_rect.y + warning_rect.height / 2 + 2,

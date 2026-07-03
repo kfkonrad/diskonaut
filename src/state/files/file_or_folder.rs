@@ -146,57 +146,57 @@ impl Folder {
             Some(next_in_path)
         }
     }
-   pub fn delete_path(&mut self, folder_names: &[OsString]) {
-       // TODO: there are some needless allocations here, this is not terrible since
-       // the deletion itself takes an order of magnitude longer, but it can be nice
-       // to reduce them
-       let mut folders_to_traverse: VecDeque<OsString> = VecDeque::from(folder_names.to_owned());
-       if folder_names.len() == 1 {
-           let name = folder_names
-               .last()
-               .expect("could not find last item in path");
-           let removed_size = &self
-               .contents
-               .get(name)
-               .expect("could not find folder")
-               .size();
-           let removed_descendents = match &self.contents.get(name).expect("could not find folder")
-           {
-               FileOrFolder::Folder(folder) => folder.num_descendants,
-               FileOrFolder::File(_file) => 1,
-           };
-           self.size -= removed_size;
-           self.num_descendants -= removed_descendents;
-           self.contents.remove(name);
-       } else {
-           let (removed_size, removed_descendents) = {
-               let item_to_remove = self
-                   .path(Vec::from(folders_to_traverse.clone()))
-                   .expect("could not find item to delete");
-               let removed_size = item_to_remove.size();
-               let removed_descendents = match item_to_remove {
-                   FileOrFolder::Folder(folder) => folder.num_descendants,
-                   FileOrFolder::File(_file) => 1,
-               };
-               (removed_size, removed_descendents)
-           };
-           let next_name = folders_to_traverse
-               .pop_front()
-               .expect("could not find next path folder");
-           let next_item = self
-               .contents
-               .get_mut(&next_name)
-               .expect("could not find folder in path");
-           match next_item {
-               FileOrFolder::Folder(folder) => {
-                   self.size -= removed_size;
-                   self.num_descendants -= removed_descendents;
-                   folder.delete_path(&Vec::from(folders_to_traverse));
-               }
-               FileOrFolder::File(_) => {
-                   panic!("got a file in the middle of a path");
-               }
-           }
-       }
-   }
+    pub fn delete_path(&mut self, folder_names: &[OsString]) {
+        // TODO: there are some needless allocations here, this is not terrible since
+        // the deletion itself takes an order of magnitude longer, but it can be nice
+        // to reduce them
+        let mut folders_to_traverse: VecDeque<OsString> = VecDeque::from(folder_names.to_owned());
+        if folder_names.len() == 1 {
+            let name = folder_names
+                .last()
+                .expect("could not find last item in path");
+            let removed_size = &self
+                .contents
+                .get(name)
+                .expect("could not find folder")
+                .size();
+            let removed_descendents = match &self.contents.get(name).expect("could not find folder")
+            {
+                FileOrFolder::Folder(folder) => folder.num_descendants,
+                FileOrFolder::File(_file) => 1,
+            };
+            self.size -= removed_size;
+            self.num_descendants -= removed_descendents;
+            self.contents.remove(name);
+        } else {
+            let (removed_size, removed_descendents) = {
+                let item_to_remove = self
+                    .path(Vec::from(folders_to_traverse.clone()))
+                    .expect("could not find item to delete");
+                let removed_size = item_to_remove.size();
+                let removed_descendents = match item_to_remove {
+                    FileOrFolder::Folder(folder) => folder.num_descendants,
+                    FileOrFolder::File(_file) => 1,
+                };
+                (removed_size, removed_descendents)
+            };
+            let next_name = folders_to_traverse
+                .pop_front()
+                .expect("could not find next path folder");
+            let next_item = self
+                .contents
+                .get_mut(&next_name)
+                .expect("could not find folder in path");
+            match next_item {
+                FileOrFolder::Folder(folder) => {
+                    self.size -= removed_size;
+                    self.num_descendants -= removed_descendents;
+                    folder.delete_path(&Vec::from(folders_to_traverse));
+                }
+                FileOrFolder::File(_) => {
+                    panic!("got a file in the middle of a path");
+                }
+            }
+        }
+    }
 }

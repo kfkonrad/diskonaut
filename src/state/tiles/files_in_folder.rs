@@ -54,8 +54,7 @@ pub fn files_in_folder(folder: &Folder, offset: usize) -> Vec<FileMetadata> {
         if approx_eq!(f64, a.percentage, b.percentage) {
             a.name.cmp(&b.name)
         } else {
-            b.percentage
-                .total_cmp(&a.percentage)
+            b.percentage.total_cmp(&a.percentage)
         }
     });
     if offset > 0 {
