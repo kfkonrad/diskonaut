@@ -4,9 +4,9 @@ use ratatui::layout::Rect;
 use ratatui::style::{Color, Modifier, Style};
 use ratatui::widgets::Widget;
 
+use crate::ui::FolderInfo;
 use crate::ui::format::DisplaySize;
 use crate::ui::title::{CellSizeOpt, TitleTelescope};
-use crate::ui::FolderInfo;
 
 #[cfg(not(target_os = "windows"))]
 use crate::os::unix::is_user_admin;

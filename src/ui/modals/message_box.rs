@@ -3,8 +3,8 @@ use ratatui::layout::Rect;
 use ratatui::style::{Color, Modifier, Style};
 use ratatui::widgets::Widget;
 
-use crate::state::tiles::FileType;
 use crate::state::FileToDelete;
+use crate::state::tiles::FileType;
 use crate::ui::format::truncate_middle;
 use crate::ui::grid::draw_filled_rect;
 
@@ -67,8 +67,9 @@ fn render_deletion_prompt(buf: &mut Buffer, message_rect: Rect, file_to_delete: 
     let file_name_line_start_position =
         (f64::from(message_rect.width - file_name_line.len() as u16) / 2.0).ceil() as u16
             + message_rect.x;
-    let y_n_line_start_position =
-        (f64::from(message_rect.width - y_n_line.len() as u16) / 2.0).ceil() as u16 + message_rect.x;
+    let y_n_line_start_position = (f64::from(message_rect.width - y_n_line.len() as u16) / 2.0)
+        .ceil() as u16
+        + message_rect.x;
     buf.set_string(
         question_line_start_position,
         message_rect.y + message_rect.height / 2 - 3,
@@ -104,9 +105,9 @@ fn render_deletion_in_progress(
     let deleting_line_start_position =
         (f64::from(message_rect.width - deleting_line.len() as u16) / 2.0).ceil() as u16
             + message_rect.x;
-    let file_line_start_position = (f64::from(message_rect.width - file_name_line.len() as u16) / 2.0)
-        .ceil() as u16
-        + message_rect.x;
+    let file_line_start_position =
+        (f64::from(message_rect.width - file_name_line.len() as u16) / 2.0).ceil() as u16
+            + message_rect.x;
     buf.set_string(
         deleting_line_start_position,
         message_rect.y + message_rect.height / 2 - 1,

@@ -22,10 +22,10 @@ use ::std::env;
 use ::std::io;
 use ::std::path::PathBuf;
 use ::std::process;
+use ::std::sync::Arc;
 use ::std::sync::atomic::{AtomicBool, Ordering};
 use ::std::sync::mpsc::{self, TrySendError};
 use ::std::sync::mpsc::{Receiver, SyncSender};
-use ::std::sync::Arc;
 use ::std::thread::park_timeout;
 use ::std::{thread, time};
 use clap::Parser;
@@ -34,14 +34,14 @@ use crossterm::event::KeyModifiers;
 use crossterm::event::{Event as BackEvent, KeyCode, KeyEvent};
 use crossterm::execute;
 use crossterm::terminal::{
-    disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen,
+    EnterAlternateScreen, LeaveAlternateScreen, disable_raw_mode, enable_raw_mode,
 };
 use ratatui::backend::Backend;
 use ratatui::backend::CrosstermBackend;
 
 use app::{App, UiMode};
 use input::TerminalEvents;
-use messages::{handle_events, Event, Instruction};
+use messages::{Event, Instruction, handle_events};
 
 #[cfg(not(test))]
 const SHOULD_SHOW_LOADING_ANIMATION: bool = true;
@@ -104,7 +104,7 @@ fn try_main() -> anyhow::Result<()> {
             Box::new(terminal_events),
             folder,
             opts.apparent_size,
-            opts.disable_delete_confirmation
+            opts.disable_delete_confirmation,
         );
     }
     let mut stdout = get_stdout();
@@ -161,7 +161,7 @@ pub fn start<B>(
         path,
         channels.event_sender,
         show_apparent_size,
-        disable_delete_confirmation
+        disable_delete_confirmation,
     );
     app.start(&channels.instruction_receiver);
     state.running.store(false, Ordering::Release);

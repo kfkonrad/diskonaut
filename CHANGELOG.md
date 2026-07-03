@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 ### Changed
 * Update dependencies to latest versions
+* Fixed code fomatting and enforced proper code formatting through CI check
 
 ### Fixed
 * Fixed keypresses registering multiple times on Windows (key release events are now ignored)
