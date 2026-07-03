@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
+## [1.0.2] - 2026-07-03
+
+### Changed
+* Update dependencies to latest versions
+
+### Fixed
+* Fixed keypresses registering multiple times on Windows (key release events are now ignored)
+
 ## [1.0.1] - 2026-05-13
 
 ### Fixed
